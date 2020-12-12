@@ -84,12 +84,6 @@ class WebCrawler():
             print("No HTML Data To Data Mine")
 
 
-
-    # Ask The WebCrawler To Set-Up A Connection To A Database; Create One If Not Present
-    def connect_to_db(self):
-        pass
-
-
     # Close WebCrawler
     def self_destruct(self):
         self.chrome_driver.quit()

@@ -4,6 +4,7 @@
 #
 # ----------------------------------------------------------------------------------------------------------------------
 from wc import WebCrawler
+from db import SQL_Database
 # ----------------------------------------------------------------------------------------------------------------------
 
 # A Function That Will Help The User Create An Associated Url Based On Thier Choice
@@ -48,7 +49,7 @@ def pages_to_scrape(num_pages, url):
 
 
 # A Function That Will Visit Each Item ID & Gather Data
-def visit_unique_item(list_of_item_ids):
+def visit_unique_item(list_of_item_ids, SQL_DB):
     Web_Scraper = WebCrawler()
 
     # Visit Each Item, Gather Unique Data & Append To An Already Waiting SQL Lite Database
@@ -57,16 +58,22 @@ def visit_unique_item(list_of_item_ids):
         Web_Scraper.navigate_url(full_url)
         item_data = Web_Scraper.scrape_data()
 
+        # Append Data To Database
+        SQL_DB.addtoDB(item_data)
+
 # ----------------------------------------------------------------------------------------------------------------------
 
 # Main Entry Point Into Python Code
 if __name__ == "__main__":
-    pass
-    # Ask WebCrawler To Check If An Operable Database Is Connected? If Not Ask It To Create One
-    # TODO CONNECT TO SQL-LITE Database
+
+    # Cnnect To Database & Prepare To Store Data
+    SQLite3_DB = SQL_Database()
 
     # # Gather Data From Toronto Police Auction Website
     # url = choose_url("Jewellery")
     # num_pages = get_num_pages(url)
     # list_of_ids = pages_to_scrape(num_pages, url)
-    # visit_unique_item(list_of_ids)
+    # visit_unique_item(list_of_ids, db_connection)
+    #
+    # # Print Number Of Rows Written
+    # SQLite3_DB.rowsinDB()
