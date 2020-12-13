@@ -40,15 +40,12 @@ class SQL_Database:
     # Function To Insert Data Into Database
     def addtoDB(self, data_):
         cursor = self.conn.cursor()
-        for row in data_:
-            sqlite_insert_str = """INSERT INTO TPA_ITEM_DB
-                                    (ITEM_NAME, SKU, CUR_PRICE, MIN_UPBID, UPBID_PRICE, MINUTES_LEFT, START_DATE, END_DATE, NUM_BIDS, HIGHEST_BIDR)
-                                    VALUES
-                                    ({}, {}, {}, {}, {}, {}, {}, {}, {}, {});"""
 
-            sqlite_insert_query = sqlite_insert_str.format(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
-            count = cursor.execute(sqlite_insert_query)
-            self.conn.commit()
+        cursor.execute("""INSERT INTO TPA_ITEM_DB(ITEM_NAME, SKU, CUR_PRICE, MIN_UPBID, UPBID_PRICE, MINUTES_LEFT, START_DATE, END_DATE, NUM_BIDS, HIGHEST_BIDR)
+                    VALUES
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);""", (data_[0], data_[1], data_[2], data_[3], data_[4], data_[5], data_[6], data_[7], data_[8], data_[9]))
+
+        self.conn.commit()
         cursor.close()
 
 
@@ -56,5 +53,5 @@ class SQL_Database:
     def rowsinDB(self):
         cursor = self.conn.cursor()
         cursor.execute("SELECT * FROM TPA_ITEM_DB;")
-        print(len(cursor.fetchall()))
+        print("Rows In DB: {}".format(len(cursor.fetchall())))
         cursor.close()

@@ -3,8 +3,8 @@
 # Title                                 Toronto Police Auctions - Website Parsing
 #
 # ----------------------------------------------------------------------------------------------------------------------
-from wc import WebCrawler
-from db import SQL_Database
+from funcs.wc import WebCrawler
+from funcs.db import SQL_Database
 # ----------------------------------------------------------------------------------------------------------------------
 
 # A Function That Will Help The User Create An Associated Url Based On Thier Choice
@@ -42,9 +42,8 @@ def pages_to_scrape(num_pages, url):
         Web_Scraper.navigate_url(new_url)
         list_of_ids.extend(Web_Scraper.scrape_ids())
 
-        print("IDs Scraped From Page: {}".format(num+1))
-
     Web_Scraper.self_destruct()
+    print("IDs Scrapped From Pages")
     return list_of_ids
 
 
@@ -56,6 +55,8 @@ def visit_unique_item(list_of_item_ids, SQL_DB):
     for item_id in list_of_item_ids:
         full_url = "https://www.policeauctionscanada.com/Listing/Details/" + str(item_id)
         Web_Scraper.navigate_url(full_url)
+
+        # Grab Item Data
         item_data = Web_Scraper.scrape_data()
 
         # Append Data To Database
@@ -69,11 +70,11 @@ if __name__ == "__main__":
     # Cnnect To Database & Prepare To Store Data
     SQLite3_DB = SQL_Database()
 
-    # # Gather Data From Toronto Police Auction Website
-    # url = choose_url("Jewellery")
-    # num_pages = get_num_pages(url)
-    # list_of_ids = pages_to_scrape(num_pages, url)
-    # visit_unique_item(list_of_ids, db_connection)
-    #
-    # # Print Number Of Rows Written
-    # SQLite3_DB.rowsinDB()
+    # Gather Data From Toronto Police Auction Website
+    url = choose_url("Jewellery")
+    num_pages = get_num_pages(url)
+    list_of_ids = pages_to_scrape(num_pages, url)
+    visit_unique_item(list_of_ids, SQLite3_DB)
+
+    # Print Number Of Rows Written
+    SQLite3_DB.rowsinDB()

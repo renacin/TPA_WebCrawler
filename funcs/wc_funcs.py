@@ -29,7 +29,7 @@ def collect_item_info(raw_html, cdriver_object):
 
                 # Clean Name
                 item_name = item_name.replace("&amp;", "")
-                for clean_x in [full_TPA_ID, "  ", "   ", "    "]:
+                for clean_x in [full_TPA_ID, "  ", "   ", "    ", "'", '"']:
                     item_name = item_name.replace(clean_x, "")
 
                 re_cur_price = r'Part">(.{1,10})</span>'

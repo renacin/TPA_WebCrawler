@@ -6,7 +6,7 @@
 import time
 import re
 
-from wc_funcs import *
+from funcs.wc_funcs import *
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
