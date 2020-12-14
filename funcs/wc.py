@@ -20,7 +20,7 @@ class WebCrawler():
     # Initial Function, Run When A WebCrawler Object Is Created
     def __init__(self):
         self.raw_html = ""
-        path = r"C:\Users\renac\Documents\Programming\Python\Selenium\chromedriver.exe"
+        path = r"/usr/lib/chromium-browser/chromedriver"
 
         chrome_options = Options()
         chrome_options.add_argument("--incognito")

@@ -3,8 +3,10 @@
 # Title                                 Toronto Police Auctions - Website Parsing
 #
 # ----------------------------------------------------------------------------------------------------------------------
-from funcs.wc import WebCrawler
-from funcs.db import SQL_Database
+from funcs.wc import *
+from funcs.db import *
+
+import time
 # ----------------------------------------------------------------------------------------------------------------------
 
 # A Function That Will Help The User Create An Associated Url Based On Thier Choice
@@ -58,6 +60,7 @@ def visit_unique_item(list_of_item_ids, SQL_DB):
 
         # Grab Item Data
         item_data = Web_Scraper.scrape_data()
+        print(item_data)
 
         # Append Data To Database
         SQL_DB.addtoDB(item_data)
@@ -70,11 +73,19 @@ if __name__ == "__main__":
     # Cnnect To Database & Prepare To Store Data
     SQLite3_DB = SQL_Database()
 
-    # Gather Data From Toronto Police Auction Website
-    url = choose_url("Jewellery")
-    num_pages = get_num_pages(url)
-    list_of_ids = pages_to_scrape(num_pages, url)
-    visit_unique_item(list_of_ids, SQLite3_DB)
+    # Continuously Scrape Data With While Loop
+    while True:
+        # Scrape Data For Different Categories: Jewellery & Electronics, Coins, & Art
+        for category in ["Jewellery", "Electronics", "Coins&Currency", "Art&Antiques"]:
+            
+            # Gather Data From Toronto Police Auction Website
+            url = choose_url(category)
+            num_pages = get_num_pages(url)
+            list_of_ids = pages_to_scrape(num_pages, url)
+            visit_unique_item(list_of_ids, SQLite3_DB)
 
-    # Print Number Of Rows Written
-    SQLite3_DB.rowsinDB()
+            # Print Number Of Rows Written
+            SQLite3_DB.rowsinDB()
+            
+        # Once Scraped For All Categories, Wait 10 Minutes Then Iterate Again
+        time.sleep(600)

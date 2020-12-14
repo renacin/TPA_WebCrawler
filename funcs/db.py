@@ -15,7 +15,7 @@ class SQL_Database:
     def __init__(self):
         try:
             # Connect To Database Check If It has Data In It
-            self.conn = sqlite3.connect(r"C:\Users\renac\Desktop\TPA_Items_DB.db")
+            self.conn = sqlite3.connect(r"/home/pi/Desktop/TPA_Items_DB.db")
 
             self.conn.execute('''
             CREATE TABLE IF NOT EXISTS TPA_ITEM_DB
