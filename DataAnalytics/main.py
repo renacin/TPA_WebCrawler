@@ -58,16 +58,24 @@ class prep_data:
     @staticmethod
     def remove_redun(df):
 
+        # Create Dataframe That Will Store Data
+        cleaned_df_dict = {}
+        for col in df.columns:
+            cleaned_df_dict[col] = []
+
+        cleaned_df = pd.DataFrame.from_dict(cleaned_df_dict)
+
         # Loop Through Unique SKUs, Remove Redundant Rows, & Append To new Df
         unique_sku = set(df["SKU"].tolist())
         for sku in unique_sku:
             extract_df = df[df["SKU"] == sku]
             extract_df = extract_df.sort_values(by="MINUTES_LEFT")
             extract_df = extract_df.drop_duplicates(subset=extract_df.columns.difference(["MINUTES_LEFT"]))
-            
-            break
 
-        return extract_df
+            # Merge Extracted Data With External Dataframe
+            cleaned_df = pd.concat([cleaned_df, extract_df])
+
+        return cleaned_df
 
 
 
