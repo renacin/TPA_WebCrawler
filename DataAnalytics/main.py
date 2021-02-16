@@ -39,13 +39,15 @@ class prep_data:
     @staticmethod
     def clean_columns(df):
 
+        # Basic Formating & Feature Creation
         df["START_DATE"] = pd.to_datetime(df["START_DATE"], format="%m/%d/%Y")
         df["END_DATE"] = pd.to_datetime(df["END_DATE"], format="%m/%d/%Y")
         df["LIST_DAY"] = df["START_DATE"].dt.day_name()
         df["LIST_MONTH"] = df["START_DATE"].dt.month_name()
         df["ITEM_TYPE"] = [prep_data.item_type(x) for x in df["SKU"]]
 
-        # Drop Items Where Type Is N/A & Num Bids Is Zero
+        # Drop Items Where Type Is N/A, MINUTES_LEFT Is N/A, And Num Bids Is Zero
+        df = df[df["MINUTES_LEFT"] != "N/A"]
         df = df[df["ITEM_TYPE"] != "N/A"]
         df = df[df["NUM_BIDS"] != 0]
 
@@ -56,8 +58,20 @@ class prep_data:
     @staticmethod
     def remove_redun(df):
 
-        return df
+        # Loop Through Unique SKUs, Remove Redundant Rows, & Append To new Df
+        unique_sku = set(df["SKU"].tolist())
+        for sku in unique_sku:
+            extract_df = df[df["SKU"] == sku]
+            extract_df = extract_df.sort_values(by="MINUTES_LEFT")
+            extract_df = extract_df.drop_duplicates(subset=extract_df.columns.difference(["MINUTES_LEFT"]))
+            
+            break
 
+        return extract_df
+
+
+
+# ----------------------------------------------------------------------------------------------------------------------
 
 
 # Main Function That Will Store Everything
@@ -65,7 +79,6 @@ def main():
     df = prep_data.data_from_db("TPA_Items_DB.db")
     df = prep_data.clean_columns(df)
     df = prep_data.remove_redun(df)
-
     df.to_csv("DEBUG.csv", index=False)
 
 
