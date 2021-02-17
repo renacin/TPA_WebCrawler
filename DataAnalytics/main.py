@@ -55,24 +55,13 @@ class prep_data:
     @staticmethod
     def remove_redun(df):
 
-        # Create Dataframe That Will Store Data
-        cleaned_df_dict = {}
-        for col in df.columns:
-            cleaned_df_dict[col] = []
+        # Sort Df By Item Name, And Then Time Remaining
+        df = df.sort_values(["ITEM_NAME", "MINUTES_LEFT"], ascending=[True, True])
+        df = df.drop_duplicates(subset=df.columns.difference(["MINUTES_LEFT"]))
 
-        cleaned_df = pd.DataFrame.from_dict(cleaned_df_dict)
+        return df
 
-        # Loop Through Unique SKUs, Remove Redundant Rows, & Append To new Df
-        unique_sku = set(df["SKU"].tolist())
-        for sku in unique_sku:
-            extract_df = df[df["SKU"] == sku]
-            extract_df = extract_df.sort_values(by="MINUTES_LEFT")
-            extract_df = extract_df.drop_duplicates(subset=extract_df.columns.difference(["MINUTES_LEFT"]))
 
-            # Merge Extracted Data With External Dataframe
-            cleaned_df = pd.concat([cleaned_df, extract_df])
-
-        return cleaned_df
 
 
 class visualize_data:
@@ -108,8 +97,6 @@ class visualize_data:
             plt.ylabel("Current Price")
             plt.show()
 
-            time.sleep(5)
-
             plt.close()
 
 
@@ -119,22 +106,22 @@ class visualize_data:
 # Main Function That Will Store Everything
 def main():
 
-    # # Data Prep
-    # df = prep_data.data_from_db("TPA_Items_DB.db")
-    # df = prep_data.clean_columns(df)
-    # df = prep_data.remove_redun(df)
+    # Data Prep
+    df = prep_data.data_from_db("TPA_Items_DB.db")
+    df = prep_data.clean_columns(df)
+    df = prep_data.remove_redun(df)
+
+    # Create Deep Copy & Write To CSV
+    cleaned_df = df.copy()
+    cleaned_df.to_csv("CleanedData.csv", index=False)
+    del df, cleaned_df
+
+    # # Read Data From CSV
+    # df = pd.read_csv("CleanedData.csv")
+    # df = visualize_data.create_columns(df)
+    # df = visualize_data.scatter_by_sku(df)
     #
-    # # Create Deep Copy & Write To CSV
-    # cleaned_df = df.copy()
-    # cleaned_df.to_csv("CleanedData.csv", index=False)
-    # del df
-
-    # Read Data From CSV
-    df = pd.read_csv("CleanedData.csv")
-    df = visualize_data.create_columns(df)
-    df = visualize_data.scatter_by_sku(df)
-
-    df.to_csv("Test.csv", index=False)
+    # df.to_csv("Test.csv", index=False)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
