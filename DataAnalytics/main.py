@@ -3,13 +3,14 @@
 # Title                         Toronto Police Auctions - Website Parsing: Data Annalytics
 #
 # ----------------------------------------------------------------------------------------------------------------------
+import time
 import sqlite3
 import datetime
 import pandas as pd
+import matplotlib.pyplot as plt
 # ----------------------------------------------------------------------------------------------------------------------
 
 class prep_data:
-
 
     # [FUNCTION #1] Read Data From SQLite Database As Pandas Df
     @staticmethod
@@ -40,10 +41,6 @@ class prep_data:
     def clean_columns(df):
 
         # Basic Formating & Feature Creation
-        df["START_DATE"] = pd.to_datetime(df["START_DATE"], format="%m/%d/%Y")
-        df["END_DATE"] = pd.to_datetime(df["END_DATE"], format="%m/%d/%Y")
-        df["LIST_DAY"] = df["START_DATE"].dt.day_name()
-        df["LIST_MONTH"] = df["START_DATE"].dt.month_name()
         df["ITEM_TYPE"] = [prep_data.item_type(x) for x in df["SKU"]]
 
         # Drop Items Where Type Is N/A, MINUTES_LEFT Is N/A, And Num Bids Is Zero
@@ -78,16 +75,66 @@ class prep_data:
         return cleaned_df
 
 
+class visualize_data:
+
+    # [FUNCTION #1] Create Basic Features
+    @staticmethod
+    def create_columns(df):
+
+        # Format Time
+        df["START_DATE"] = pd.to_datetime(df["START_DATE"], format="%m/%d/%Y")
+        df["END_DATE"] = pd.to_datetime(df["END_DATE"], format="%m/%d/%Y")
+
+        df["LIST_DAY"] = df["START_DATE"].dt.day_name()
+        df["LIST_MONTH"] = df["START_DATE"].dt.month_name()
+        df["MINUTES_SINCE"] = 10080 - df["MINUTES_LEFT"]
+
+        return df
+
+
+    # [FUNCTION #2] Visualize Data
+    @staticmethod
+    def scatter_by_sku(df):
+        unique_sku = set(df["SKU"].tolist())
+        for sku in unique_sku:
+            extract_df = df[df["SKU"] == sku]
+
+            name_list = extract_df["ITEM_NAME"].tolist()
+            item_name = str(name_list[0])
+
+            plt.scatter(extract_df.MINUTES_SINCE, extract_df.CUR_PRICE)
+            plt.title(item_name)
+            plt.xlabel("Minutes Since")
+            plt.ylabel("Current Price")
+            plt.show()
+
+            time.sleep(5)
+
+            plt.close()
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 
 
 # Main Function That Will Store Everything
 def main():
-    df = prep_data.data_from_db("TPA_Items_DB.db")
-    df = prep_data.clean_columns(df)
-    df = prep_data.remove_redun(df)
-    df.to_csv("DEBUG.csv", index=False)
+
+    # # Data Prep
+    # df = prep_data.data_from_db("TPA_Items_DB.db")
+    # df = prep_data.clean_columns(df)
+    # df = prep_data.remove_redun(df)
+    #
+    # # Create Deep Copy & Write To CSV
+    # cleaned_df = df.copy()
+    # cleaned_df.to_csv("CleanedData.csv", index=False)
+    # del df
+
+    # Read Data From CSV
+    df = pd.read_csv("CleanedData.csv")
+    df = visualize_data.create_columns(df)
+    df = visualize_data.scatter_by_sku(df)
+
+    df.to_csv("Test.csv", index=False)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
