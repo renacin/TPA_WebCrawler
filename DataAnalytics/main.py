@@ -11,7 +11,9 @@ from datetime import datetime, timedelta
 # ----------------------------------------------------------------------------------------------------------------------
 
 
+
 class prep_data:
+
 
     # [FUNCTION #1] Read Data From SQLite Database As Pandas Df
     @staticmethod
@@ -35,6 +37,7 @@ class prep_data:
 
         return "N/A"
 
+
     # [FUNCTION #2] Clean Datetime Columns & Create A Date Obsserved Column
     @staticmethod
     def clean_columns(df):
@@ -53,6 +56,7 @@ class prep_data:
 
         return df
 
+
     # [FUNCTION #3] Remove Redundant Rows
     @staticmethod
     def remove_redun(df):
@@ -64,7 +68,9 @@ class prep_data:
         return df
 
 
-class visualize_data:
+
+class create_data:
+
 
     # Function For [FUNCTION #1] Identify The Date Observed
     def date_obs_calc(end_date, days_since):
@@ -75,9 +81,10 @@ class visualize_data:
 
         return (cleaned_end_date - timedelta(days=days_since))
 
+
     # [FUNCTION #1] Create Basic Features
     @staticmethod
-    def create_columns(df):
+    def parse_dates(df):
 
         # Format Time
         end_date_list = df["END_DATE"].tolist()
@@ -93,12 +100,26 @@ class visualize_data:
         df["DAYS_SINCE"] = df["DAYS_SINCE"].replace([-1], 0)
 
         days_since_list = df["DAYS_SINCE"].tolist()
-        day_observed = [visualize_data.date_obs_calc(x, y) for x, y in zip(end_date_list, days_since_list)]
+        day_observed = [create_data.date_obs_calc(x, y) for x, y in zip(end_date_list, days_since_list)]
         df["DATE_OBS"] = day_observed
 
         return df
 
-    # [FUNCTION #2] Visualize Data
+
+    # [FUNCTION #2] Create IDs For Type Of Items
+    @staticmethod
+    def create_ids(df):
+        df["TEMP"] = df["END_DATE"].astype(str) + df["SKU"].astype(str)
+        df["ID"] = df.groupby(["TEMP"]).grouper.group_info[0]
+
+        return df
+
+
+
+class visualize_data:
+
+
+    # [FUNCTION #1] Visualize Data
     @staticmethod
     def scatter_by_sku(df):
         unique_sku = set(df["SKU"].tolist())
@@ -117,6 +138,7 @@ class visualize_data:
             plt.close()
 
 
+
 # ----------------------------------------------------------------------------------------------------------------------
 
 
@@ -133,9 +155,10 @@ def main():
     # cleaned_df.to_csv("CleanedData.csv", index=False)
     # del df, cleaned_df
 
-    # Read Data From CSV
+    # Read Data From CSV & Create New Features
     df = pd.read_csv("Data/CleanedData.csv")
-    visualize_data.create_columns(df)
+    df = create_data.parse_dates(df)
+    df = create_data.create_ids(df)
 
     # df = visualize_data.scatter_by_sku(df)
     df.to_csv("Data/TPS_Auctions_Data.csv", index=False)
