@@ -11,7 +11,6 @@ from datetime import datetime, timedelta
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-
 class prep_data:
 
     # [FUNCTION #1] Read Data From SQLite Database As Pandas Df
@@ -22,7 +21,6 @@ class prep_data:
         query = "SELECT * FROM TPA_ITEM_DB;"
 
         return pd.read_sql_query(query, conn)
-
 
     # Function For [FUNCTION #2] Parse Item Type
     def item_type(sku):
@@ -36,7 +34,6 @@ class prep_data:
             return "Antique"
 
         return "N/A"
-
 
     # [FUNCTION #2] Clean Datetime Columns & Create A Date Obsserved Column
     @staticmethod
@@ -56,7 +53,6 @@ class prep_data:
 
         return df
 
-
     # [FUNCTION #3] Remove Redundant Rows
     @staticmethod
     def remove_redun(df):
@@ -68,9 +64,7 @@ class prep_data:
         return df
 
 
-
 class visualize_data:
-
 
     # Function For [FUNCTION #1] Identify The Date Observed
     def date_obs_calc(end_date, days_since):
@@ -80,7 +74,6 @@ class visualize_data:
         cleaned_end_date = datetime(edl[0], edl[1], edl[2])
 
         return (cleaned_end_date - timedelta(days=days_since))
-
 
     # [FUNCTION #1] Create Basic Features
     @staticmethod
@@ -104,7 +97,6 @@ class visualize_data:
         df["DATE_OBS"] = day_observed
 
         return df
-
 
     # [FUNCTION #2] Visualize Data
     @staticmethod
@@ -132,7 +124,7 @@ class visualize_data:
 def main():
 
     # # Data Prep
-    # df = prep_data.data_from_db("TPA_Items_DB.db")
+    # df = prep_data.data_from_db("Data/TPA_Items_DB.db")
     # df = prep_data.clean_columns(df)
     # df = prep_data.remove_redun(df)
     #
@@ -142,11 +134,11 @@ def main():
     # del df, cleaned_df
 
     # Read Data From CSV
-    df = pd.read_csv("CleanedData.csv")
+    df = pd.read_csv("Data/CleanedData.csv")
     visualize_data.create_columns(df)
 
     # df = visualize_data.scatter_by_sku(df)
-    df.to_csv("TPS_Auctions_Data.csv", index=False)
+    df.to_csv("Data/TPS_Auctions_Data.csv", index=False)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
