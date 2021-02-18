@@ -5,10 +5,12 @@
 # ----------------------------------------------------------------------------------------------------------------------
 import time
 import sqlite3
-import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
+from datetime import datetime, timedelta
 # ----------------------------------------------------------------------------------------------------------------------
+
+
 
 class prep_data:
 
@@ -22,7 +24,7 @@ class prep_data:
         return pd.read_sql_query(query, conn)
 
 
-    # Function For  [FUNCTION #2] Parse Item Type
+    # Function For [FUNCTION #2] Parse Item Type
     def item_type(sku):
         if sku[-1] == "F":
             return "Jewelry"
@@ -40,6 +42,10 @@ class prep_data:
     @staticmethod
     def clean_columns(df):
 
+        # Format Time
+        df["START_DATE"] = pd.to_datetime(df["START_DATE"], format="%m/%d/%Y")
+        df["END_DATE"] = pd.to_datetime(df["END_DATE"], format="%m/%d/%Y")
+
         # Basic Formating & Feature Creation
         df["ITEM_TYPE"] = [prep_data.item_type(x) for x in df["SKU"]]
 
@@ -56,27 +62,46 @@ class prep_data:
     def remove_redun(df):
 
         # Sort Df By Item Name, And Then Time Remaining
-        df = df.sort_values(["ITEM_NAME", "MINUTES_LEFT"], ascending=[True, True])
+        df = df.sort_values(["END_DATE", "ITEM_NAME", "MINUTES_LEFT"], ascending=[True, True, True])
         df = df.drop_duplicates(subset=df.columns.difference(["MINUTES_LEFT"]))
 
         return df
 
 
 
-
 class visualize_data:
+
+
+    # Function For [FUNCTION #1] Identify The Date Observed
+    def date_obs_calc(end_date, days_since):
+
+        edl = end_date.split("-")
+        edl = list(map(int, edl))
+        cleaned_end_date = datetime(edl[0], edl[1], edl[2])
+
+        return (cleaned_end_date - timedelta(days=days_since))
+
 
     # [FUNCTION #1] Create Basic Features
     @staticmethod
     def create_columns(df):
 
         # Format Time
-        df["START_DATE"] = pd.to_datetime(df["START_DATE"], format="%m/%d/%Y")
-        df["END_DATE"] = pd.to_datetime(df["END_DATE"], format="%m/%d/%Y")
+        end_date_list = df["END_DATE"].tolist()
+        df["START_DATE"] = pd.to_datetime(df["START_DATE"], format="%Y-%m-%d")
+        df["END_DATE"] = pd.to_datetime(df["END_DATE"], format="%Y-%m-%d")
 
         df["LIST_DAY"] = df["START_DATE"].dt.day_name()
         df["LIST_MONTH"] = df["START_DATE"].dt.month_name()
         df["MINUTES_SINCE"] = 10080 - df["MINUTES_LEFT"]
+
+        # Create A Date Observed Column
+        df["DAYS_SINCE"] = 7 - ((df["MINUTES_SINCE"] // 1440) + 1)
+        df["DAYS_SINCE"] = df["DAYS_SINCE"].replace([-1], 0)
+
+        days_since_list = df["DAYS_SINCE"].tolist()
+        day_observed = [visualize_data.date_obs_calc(x, y) for x, y in zip(end_date_list, days_since_list)]
+        df["DATE_OBS"] = day_observed
 
         return df
 
@@ -106,22 +131,22 @@ class visualize_data:
 # Main Function That Will Store Everything
 def main():
 
-    # Data Prep
-    df = prep_data.data_from_db("TPA_Items_DB.db")
-    df = prep_data.clean_columns(df)
-    df = prep_data.remove_redun(df)
-
-    # Create Deep Copy & Write To CSV
-    cleaned_df = df.copy()
-    cleaned_df.to_csv("CleanedData.csv", index=False)
-    del df, cleaned_df
-
-    # # Read Data From CSV
-    # df = pd.read_csv("CleanedData.csv")
-    # df = visualize_data.create_columns(df)
-    # df = visualize_data.scatter_by_sku(df)
+    # # Data Prep
+    # df = prep_data.data_from_db("TPA_Items_DB.db")
+    # df = prep_data.clean_columns(df)
+    # df = prep_data.remove_redun(df)
     #
-    # df.to_csv("Test.csv", index=False)
+    # # Create Deep Copy & Write To CSV
+    # cleaned_df = df.copy()
+    # cleaned_df.to_csv("CleanedData.csv", index=False)
+    # del df, cleaned_df
+
+    # Read Data From CSV
+    df = pd.read_csv("CleanedData.csv")
+    visualize_data.create_columns(df)
+
+    # df = visualize_data.scatter_by_sku(df)
+    df.to_csv("TPS_Auctions_Data.csv", index=False)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
