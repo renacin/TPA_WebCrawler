@@ -11,9 +11,7 @@ from datetime import datetime, timedelta
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-
 class prep_data:
-
 
     # [FUNCTION #1] Read Data From SQLite Database As Pandas Df
     @staticmethod
@@ -71,7 +69,6 @@ class prep_data:
 
 class create_data:
 
-
     # Function For [FUNCTION #1] Identify The Date Observed
     def date_obs_calc(end_date, days_since):
 
@@ -118,7 +115,6 @@ class create_data:
 
 class visualize_data:
 
-
     # [FUNCTION #1] Visualize Data
     @staticmethod
     def scatter_by_sku(df):
@@ -138,9 +134,7 @@ class visualize_data:
             plt.close()
 
 
-
 # ----------------------------------------------------------------------------------------------------------------------
-
 
 # Main Function That Will Store Everything
 def main():
@@ -162,7 +156,6 @@ def main():
 
     # df = visualize_data.scatter_by_sku(df)
     df.to_csv("Data/TPS_Auctions_Data.csv", index=False)
-
 
 # ----------------------------------------------------------------------------------------------------------------------
 
