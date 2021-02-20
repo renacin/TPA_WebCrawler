@@ -108,14 +108,46 @@ class create_data:
     def create_ids(df):
         df["TEMP"] = df["END_DATE"].astype(str) + df["SKU"].astype(str)
         df["ID"] = df.groupby(["TEMP"]).grouper.group_info[0]
+        del df["TEMP"]
 
         return df
 
 
 
-class visualize_data:
+class data_analysis:
 
-    # [FUNCTION #1] Visualize Data
+
+    # [FUNCTION #1] Describe Data
+    @staticmethod
+    def describe(df):
+
+        # All Items Sold
+        items_sold = df["ID"].max()
+        print("Total Items Sold: {}".format(items_sold))
+
+        for item_type in df.ITEM_TYPE.unique():
+
+            # Per Item
+            it_df = df[df["ITEM_TYPE"] == item_type]
+            itc = len(it_df.ID.unique())
+            itc_per = round((itc/items_sold)*100, 2)
+            print("Total {} Items Sold In Total Test: {} [{}%]".format(item_type, itc, itc_per))
+
+            # Per Item Per Month
+            for month_ in it_df.LIST_MONTH.unique():
+                it_m_df = it_df[it_df["LIST_MONTH"] == month_]
+                it_m_c = len(it_m_df.ID.unique())
+                it_m_c_per = round((it_m_c/itc)*100, 2)
+                print("Total {} Items Sold In {}: {} [{}%]".format(item_type, month_, it_m_c, it_m_c_per))
+
+
+
+
+
+
+
+
+    # [FUNCTION #X] Visualize Data By Scatter Plot
     @staticmethod
     def scatter_by_sku(df):
         unique_sku = set(df["SKU"].tolist())
@@ -154,8 +186,9 @@ def main():
     df = create_data.parse_dates(df)
     df = create_data.create_ids(df)
 
-    # df = visualize_data.scatter_by_sku(df)
-    df.to_csv("Data/TPS_Auctions_Data.csv", index=False)
+    # Describe Data
+    data_analysis.describe(df)
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 
