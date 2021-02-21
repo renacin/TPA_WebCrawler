@@ -34,10 +34,7 @@ def main():
     # Descriptive Statistics
     for col_name in ["CUR_PRICE", "NUM_BIDS"]:
 
-        descriptive.central_tendency(df_last_bid[col_name], print_data=True)
-        descriptive.dispersion(df_last_bid[col_name], print_data=True)
-        descriptive.distribution(df_last_bid[col_name], print_data=True)
-
+        descriptive.histogram(df_last_bid[col_name])
 
     # df_last_bid.to_csv("DataLastBidPrice.csv", index=False)
 

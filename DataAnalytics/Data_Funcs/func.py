@@ -169,7 +169,7 @@ class descriptive:
         return [col_std, col_var, col_min, col_max]
 
 
-    # [FUNCTION #2] Describe Data Via Distribution Statistics | Skewness, Kurtosis | CAUTION SKEW & KURTOSIS CAN BE DISTORTED
+    # [FUNCTION #3] Describe Data Via Distribution Statistics | Skewness, Kurtosis | CAUTION SKEW & KURTOSIS CAN BE DISTORTED
     @staticmethod
     def distribution(df_list, print_data=False):
         col_name = df_list.name
@@ -185,16 +185,28 @@ class descriptive:
         return [col_skew, col_kurto]
 
 
-    # [FUNCTION #X] Visualize Data By Scatter Plot
+    # [FUNCTION #4] Visualize Data By Histogram
     @staticmethod
-    def histogram(df):
-        price_data = df["CUR_PRICE"]
-        bidding_data = df["NUM_BIDS"]
+    def histogram(df_list):
 
-        print(df["CUR_PRICE"].mean())
-        print(df["NUM_BIDS"].mean())
+        # Name Of Column
+        col_name = df_list.name
 
-        # plt.hist(price_data, 50, edgecolor="black")
+        # Central Distribution Measures
+        col_mean, col_mode, col_median, col_count = descriptive.central_tendency(df_list, print_data=True)
+        col_std, col_var, col_min, col_max = descriptive.dispersion(df_list, print_data=True)
+        col_skew, col_kurto = descriptive.distribution(df_list, print_data=True)
 
-        plt.scatter(bidding_data, price_data, s=5)
+        # Basics Of Histogram
+        plt.figure(figsize= (5, 5))
+        plt.hist(df_list, 20, edgecolor="black")
+        plt.title("Histogram: {}".format(col_name))
+        plt.xlabel("Obersvations Of: {}".format(col_name))
+        plt.ylabel("Frequency")
+
+        # Add Line & Text Overlay
+        plt.axvline(col_mean, color='k', linestyle='dashed', linewidth=1)
+        plt.axvline(col_mode, color='k', linestyle='dashed', linewidth=1)
+        plt.axvline(col_median, color='k', linestyle='dashed', linewidth=1)
+
         plt.show()
