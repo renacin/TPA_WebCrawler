@@ -42,3 +42,7 @@ class data_analysis:
             plt.show()
 
             plt.close()
+
+
+Notes:
+    + https://stat.utexas.edu/images/SSC/Site/documents/SPSS_DescriptiveStats.pdf
