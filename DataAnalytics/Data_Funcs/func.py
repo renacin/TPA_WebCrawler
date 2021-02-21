@@ -5,6 +5,8 @@
 # ----------------------------------------------------------------------------------------------------------------------
 import time
 import sqlite3
+import numpy as np
+from scipy import stats
 import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
@@ -115,12 +117,67 @@ class create_data:
         return df
 
 
-    # [FUNCTION #3] Based On Previous Df Create New DF of Only Rows With Final Bid Price
+    # [FUNCTION #3] Based On Previous Df Create New DF of Only Rows With Final Bid Price | Similar To Remove Redundant
     @staticmethod
     def last_bids_df(df):
 
+        # Data Should Be Sorted But Just In Case Sort Again
+        df = df.sort_values(["END_DATE", "ITEM_NAME", "MINUTES_LEFT"], ascending=[True, True, True])
+        cleaned_df = df.drop_duplicates(subset=df.columns.difference(["CUR_PRICE", "MIN_UPBID", "MINUTES_LEFT", "NUM_BIDS", "HIGHEST_BIDR", "MINUTES_SINCE", "DAYS_SINCE", "DATE_OBS"]))
 
-        return df
+        return cleaned_df
 
 
 # ----------------------------------------------------------------------------------------------------------------------
+
+
+class descriptive:
+
+
+    # [FUNCTION #1] Describe Data Via Central Tendency Measures | Mean, Median, Mode, Sum, Num Obs
+    @staticmethod
+    def central_tendency(df_list, print_var=False):
+
+        col_mean = round(np.mean(df_list))
+        col_mode = stats.mode(df_list)
+        col_mode = round(col_mode[0][0])
+        col_median = round(np.median(df_list))
+        col_count = len(df_list)
+
+        if print_var:
+            print("{} | Mean: {} | Median: {} | Mode: {} | Count: {}".format(df_list.name, col_mean, col_median, col_mode, col_count))
+
+        return [df_list.name, col_mean, col_mode, col_median, col_count]
+
+
+    # [FUNCTION #2] Describe Data Via Dispersion Statistics | Std. Dev, Variance, Range, Min, Max | Option For Box Plot
+    @staticmethod
+    def dispersion(df_list):
+        pass
+
+
+    # [FUNCTION #2] Describe Data Via Distribution Statistics | Skewness, Kurtosis
+    @staticmethod
+    def distribution(df_list):
+        pass
+
+
+
+
+
+
+
+
+    # [FUNCTION #X] Visualize Data By Scatter Plot
+    @staticmethod
+    def histogram(df):
+        price_data = df["CUR_PRICE"]
+        bidding_data = df["NUM_BIDS"]
+
+        print(df["CUR_PRICE"].mean())
+        print(df["NUM_BIDS"].mean())
+
+        # plt.hist(price_data, 50, edgecolor="black")
+
+        plt.scatter(bidding_data, price_data, s=5)
+        plt.show()
