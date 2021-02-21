@@ -136,36 +136,53 @@ class descriptive:
 
     # [FUNCTION #1] Describe Data Via Central Tendency Measures | Mean, Median, Mode, Sum, Num Obs
     @staticmethod
-    def central_tendency(df_list, print_var=False):
+    def central_tendency(df_list, print_data=False):
 
-        col_mean = round(np.mean(df_list))
+        col_name = df_list.name
+
+        col_mean = round(np.mean(df_list), 2)
         col_mode = stats.mode(df_list)
-        col_mode = round(col_mode[0][0])
-        col_median = round(np.median(df_list))
+        col_mode = round(col_mode[0][0], 2)
+        col_median = round(np.median(df_list), 2)
         col_count = len(df_list)
 
-        if print_var:
-            print("{} | Mean: {} | Median: {} | Mode: {} | Count: {}".format(df_list.name, col_mean, col_median, col_mode, col_count))
+        if print_data:
+            print("{} | Mean: {} | Median: {} | Mode: {} | Count: {}".format(col_name, col_mean, col_median, col_mode, col_count))
 
-        return [df_list.name, col_mean, col_mode, col_median, col_count]
+        return [col_mean, col_mode, col_median, col_count]
 
 
-    # [FUNCTION #2] Describe Data Via Dispersion Statistics | Std. Dev, Variance, Range, Min, Max | Option For Box Plot
+    # [FUNCTION #2] Describe Data Via Dispersion Statistics | Std. Dev, Variance, Min, Max
     @staticmethod
-    def dispersion(df_list):
-        pass
+    def dispersion(df_list, print_data=False):
+
+        col_name = df_list.name
+
+        col_std = round(np.std(df_list), 2)
+        col_var = round(np.var(df_list), 2)
+        col_min = df_list.min()
+        col_max = df_list.max()
+
+        if print_data:
+            print("{} | Stn. Dev: {} | Variance: {} | Min: {} | Max: {}".format(col_name, col_std, col_var, col_min, col_max))
+
+        return [col_std, col_var, col_min, col_max]
 
 
-    # [FUNCTION #2] Describe Data Via Distribution Statistics | Skewness, Kurtosis
+    # [FUNCTION #2] Describe Data Via Distribution Statistics | Skewness, Kurtosis | CAUTION SKEW & KURTOSIS CAN BE DISTORTED
     @staticmethod
-    def distribution(df_list):
-        pass
+    def distribution(df_list, print_data=False):
+        col_name = df_list.name
 
+        # Skewness Should Be 0; Negative Num Means Left Tail Is Long; Posetive Right Tail Is Long
+        # Kurtosis Should Be 3; Higher Means Leptokurtic; Lower Means Platykurtic
+        col_skew = round(stats.skew(df_list), 2)
+        col_kurto = round(stats.kurtosis(df_list), 2)
 
+        if print_data:
+            print("{} | Skewness: {} | Kurtosis: {}".format(col_name, col_skew, col_kurto))
 
-
-
-
+        return [col_skew, col_kurto]
 
 
     # [FUNCTION #X] Visualize Data By Scatter Plot
