@@ -205,8 +205,9 @@ class descriptive:
         plt.ylabel("Frequency")
 
         # Add Line & Text Overlay
-        plt.axvline(col_mean, color='k', linestyle='dashed', linewidth=1)
-        plt.axvline(col_mode, color='k', linestyle='dashed', linewidth=1)
-        plt.axvline(col_median, color='k', linestyle='dashed', linewidth=1)
+        ct_descriptors = {"Mean": col_mean, "Median": col_median, "Mode": col_mode}
+        for cent_tend in ct_descriptors:
+            plt.axvline(ct_descriptors[cent_tend], color='k', linestyle='dashed', linewidth=1)
+            plt.text(ct_descriptors[cent_tend], 10, cent_tend, fontsize=8, color="k", rotation=90)
 
         plt.show()

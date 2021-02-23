@@ -36,7 +36,9 @@ def main():
 
         descriptive.histogram(df_last_bid[col_name])
 
-    # df_last_bid.to_csv("DataLastBidPrice.csv", index=False)
+
+
+    #df_last_bid.to_csv("Data/DataLastBidPrice.csv", index=False)
 
 # ----------------------------------------------------------------------------------------------------------------------
 
