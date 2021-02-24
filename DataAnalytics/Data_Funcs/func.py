@@ -8,6 +8,7 @@ import sqlite3
 import numpy as np
 from scipy import stats
 import pandas as pd
+from collections import Counter
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 # ----------------------------------------------------------------------------------------------------------------------
@@ -198,8 +199,9 @@ class descriptive:
         col_skew, col_kurto = descriptive.distribution(df_list, print_data=True)
 
         # Basics Of Histogram
+        bins_ = 15
         plt.figure(figsize= (5, 5))
-        plt.hist(df_list, 20, edgecolor="black")
+        plt.hist(df_list, bins_, edgecolor="black")
         plt.title("Histogram: {}".format(col_name))
         plt.xlabel("Obersvations Of: {}".format(col_name))
         plt.ylabel("Frequency")
@@ -208,6 +210,27 @@ class descriptive:
         ct_descriptors = {"Mean": col_mean, "Median": col_median, "Mode": col_mode}
         for cent_tend in ct_descriptors:
             plt.axvline(ct_descriptors[cent_tend], color='k', linestyle='dashed', linewidth=1)
-            plt.text(ct_descriptors[cent_tend], 10, cent_tend, fontsize=8, color="k", rotation=90)
+            plt.text(ct_descriptors[cent_tend], 10, "{}: {}".format(cent_tend, ct_descriptors[cent_tend]), fontsize=8, color="k", rotation=90)
+
+        # Plot Standard Deviation Data
+        minus_1_std = round(col_mean - col_std, 2)
+        plus_1_std = round(col_mean + col_std, 2)
+
+        if (plus_1_std <= col_max) and (minus_1_std >= 0):
+            plt.text(minus_1_std, 10, "-1 Standard Dev: {}".format(minus_1_std), fontsize=8, color="k", rotation=90)
+            plt.axvline(minus_1_std, color='red', linestyle='dashed', linewidth=1)
+            plt.text(plus_1_std, 10, "+1 Standard Dev: {}".format(plus_1_std), fontsize=8, color="k", rotation=90)
+            plt.axvline(plus_1_std, color='red', linestyle='dashed', linewidth=1)
+
+        elif (minus_1_std >= 0):
+            plt.text(minus_1_std, 10, "-1 Standard Dev: {}".format(minus_1_std), fontsize=8, color="k", rotation=90)
+            plt.axvline(minus_1_std, color='red', linestyle='dashed', linewidth=1)
+
+        elif (plus_1_std <= col_max):
+            plt.text(plus_1_std, 10, "+1 Standard Dev: {}".format(plus_1_std), fontsize=8, color="k", rotation=90)
+            plt.axvline(plus_1_std, color='red', linestyle='dashed', linewidth=1)
+
+
+
 
         plt.show()
