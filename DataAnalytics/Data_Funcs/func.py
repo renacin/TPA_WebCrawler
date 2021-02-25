@@ -113,7 +113,8 @@ class create_data:
     def create_ids(df):
         df["TEMP"] = df["END_DATE"].astype(str) + df["SKU"].astype(str)
         df["ID"] = df.groupby(["TEMP"]).grouper.group_info[0]
-        del df["TEMP"]
+
+        del df["TEMP"], df["UPBID_PRICE"]
 
         return df
 
@@ -186,7 +187,7 @@ class descriptive:
         return [col_skew, col_kurto]
 
 
-    # [FUNCTION #4] Visualize Data By Histogram
+    # [FUNCTION #4] Visualize Data By Histogram | USE ONLY ON RATIO DATA ONLY
     @staticmethod
     def histogram(df_list):
 
@@ -212,6 +213,8 @@ class descriptive:
             plt.axvline(ct_descriptors[cent_tend], color='k', linestyle='dashed', linewidth=1)
             plt.text(ct_descriptors[cent_tend], 10, "{}: {}".format(cent_tend, ct_descriptors[cent_tend]), fontsize=8, color="k", rotation=90)
 
+        print("\n")
+
         # Plot Standard Deviation Data
         minus_1_std = round(col_mean - col_std, 2)
         plus_1_std = round(col_mean + col_std, 2)
@@ -230,7 +233,11 @@ class descriptive:
             plt.text(plus_1_std, 10, "+1 Standard Dev: {}".format(plus_1_std), fontsize=8, color="k", rotation=90)
             plt.axvline(plus_1_std, color='red', linestyle='dashed', linewidth=1)
 
-
-
-
         plt.show()
+
+
+    # [FUNCTION #5] Visualize Data By Freq Table | USE ONLY ON NOMINAL
+    @staticmethod
+    def freqtable(df_list):
+        cat_obs_df = df_list.value_counts(normalize=True).to_frame()
+        print(cat_obs)
