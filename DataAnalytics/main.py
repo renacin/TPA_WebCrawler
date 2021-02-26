@@ -31,9 +31,9 @@ def main():
     df_last_bid = create_data.last_bids_df(df_all_data)
 
 
-    # Descriptive Statistics For Ratio Data | Using Final Data
-    for col_name in ["CUR_PRICE", "NUM_BIDS"]:
-        descriptive.histogram(df_last_bid[col_name])
+    # # Descriptive Statistics For Ratio Data | Using Final Data
+    # for col_name in ["CUR_PRICE", "NUM_BIDS"]:
+    #     descriptive.histogram(df_last_bid[col_name])
 
     # Descriptive Statistics For Nominal Data | Using Final Data
     for col_name in ["HIGHEST_BIDR"]:

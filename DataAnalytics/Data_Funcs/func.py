@@ -239,5 +239,16 @@ class descriptive:
     # [FUNCTION #5] Visualize Data By Freq Table | USE ONLY ON NOMINAL
     @staticmethod
     def freqtable(df_list):
-        cat_obs_df = df_list.value_counts(normalize=True).to_frame()
-        print(cat_obs)
+        col_name = df_list.name
+        len_col =  len(df_list)
+
+        # Create New Dataframe | Replace Names
+        obs_df = df_list.value_counts().to_frame()
+        obs_df = obs_df.reset_index(drop=False)
+        obs_df = obs_df.rename({col_name : "Count"}, axis=1)
+        obs_df = obs_df.rename({"index" : col_name}, axis=1)
+
+        # Find Percentage
+        obs_df["Percentage"] = (obs_df["Count"] / len_col) * 100
+
+        print(obs_df)
