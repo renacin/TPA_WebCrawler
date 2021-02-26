@@ -251,4 +251,4 @@ class descriptive:
         # Find Percentage
         obs_df["Percentage"] = (obs_df["Count"] / len_col) * 100
 
-        print(obs_df)
+        print(obs_df.head(20))
