@@ -21,7 +21,7 @@ def main():
 
     df_data = create_data.create_index(df_last_bid)
 
-    df_data = df_data[df_data["ITEM_TYPE"] == "Technology"]
+    # df_data = df_data[df_data["ITEM_TYPE"] == "Technology"]
 
     # Descriptive Statistics For Ratio Data | Using Final Data
     for col_name in ["CUR_PRICE", "NUM_BIDS", "DESIRABILITY"]:
@@ -31,7 +31,8 @@ def main():
     for col_name in ["HIGHEST_BIDR"]:
         descriptive.freqtable(df_data[col_name])
 
-
+    # Export Data For Analysis
+    df_data.to_csv("Data/Data2Analyze.csv", index=False)
 # ----------------------------------------------------------------------------------------------------------------------
 
 # Main Entry Point Into Python Code
