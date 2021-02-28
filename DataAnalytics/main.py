@@ -12,16 +12,16 @@ from Data_Funcs.func import *
 def main():
 
 
-    # # Data Prep
-    # df = prep_data.data_from_db("Data/TPA_Items_DB.db")
-    # df = prep_data.clean_columns(df)
-    # df = prep_data.remove_redun(df)
-    #
-    #
-    # # Create Deep Copy & Write To CSV
-    # cleaned_df = df.copy()
-    # cleaned_df.to_csv("CleanedData.csv", index=False)
-    # del df, cleaned_df
+    # Data Prep
+    df = prep_data.data_from_db("Data/")
+    df = prep_data.clean_columns(df)
+    df = prep_data.remove_redun(df)
+
+
+    # Create Deep Copy & Write To CSV
+    cleaned_df = df.copy()
+    cleaned_df.to_csv("CleanedData.csv", index=False)
+    del df, cleaned_df
 
 
     # Read Data From CSV & Create New Features
@@ -31,15 +31,17 @@ def main():
     df_last_bid = create_data.last_bids_df(df_all_data)
 
 
-    # # Descriptive Statistics For Ratio Data | Using Final Data
-    # for col_name in ["CUR_PRICE", "NUM_BIDS"]:
-    #     descriptive.histogram(df_last_bid[col_name])
+    # Descriptive Statistics For Ratio Data | Using Final Data
+    for col_name in ["CUR_PRICE", "NUM_BIDS"]:
+        descriptive.histogram(df_last_bid[col_name])
+
 
     # Descriptive Statistics For Nominal Data | Using Final Data
     for col_name in ["HIGHEST_BIDR"]:
         descriptive.freqtable(df_last_bid[col_name])
 
-    #df_last_bid.to_csv("Data/DataLastBidPrice.csv", index=False)
+
+    df_last_bid.to_csv("Data/DataLastBidPrice.csv", index=False)
 
 # ----------------------------------------------------------------------------------------------------------------------
 

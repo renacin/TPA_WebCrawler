@@ -3,6 +3,7 @@
 # Title                           Website Parsing: Data Analytics - Needed Functions
 #
 # ----------------------------------------------------------------------------------------------------------------------
+import glob
 import time
 import sqlite3
 import numpy as np
@@ -16,14 +17,23 @@ from datetime import datetime, timedelta
 
 class prep_data:
 
-    # [FUNCTION #1] Read Data From SQLite Database As Pandas Df
-    @staticmethod
-    def data_from_db(db_path):
-
+    # For [FUNCTION #1] Read Databases Turn To Dataframes
+    def db_to_df(db_path):
         conn = sqlite3.connect(db_path)
         query = "SELECT * FROM TPA_ITEM_DB;"
 
         return pd.read_sql_query(query, conn)
+
+
+    # [FUNCTION #1] Read Data From SQLite Database As Pandas Df
+    @staticmethod
+    def data_from_db(path):
+
+        file_list = glob.glob(path + "*.db")
+        all_dfs = [prep_data.db_to_df(filename) for filename in file_list]
+        full_df = pd.concat(all_dfs, axis=0, ignore_index=True)
+
+        return full_df
 
     # Function For [FUNCTION #2] Parse Item Type
     def item_type(sku):
