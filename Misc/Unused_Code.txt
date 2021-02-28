@@ -46,3 +46,25 @@ class data_analysis:
 
 Notes:
     + https://stat.utexas.edu/images/SSC/Site/documents/SPSS_DescriptiveStats.pdf
+
+
+
+
+    # # Data Prep
+    # df = prep_data.data_from_db("Data/")
+    # df = prep_data.clean_columns(df)
+    # df = prep_data.remove_redun(df)
+    #
+    #
+    # # Create Deep Copy & Write To CSV
+    # cleaned_df = df.copy()
+    # cleaned_df.to_csv("CleanedData.csv", index=False)
+    # del df, cleaned_df
+    # # Descriptive Statistics For Ratio Data | Using Final Data
+    # for col_name in ["CUR_PRICE", "NUM_BIDS"]:
+    #     descriptive.histogram(df_last_bid[col_name])
+    #
+    #
+    # # Descriptive Statistics For Nominal Data | Using Final Data
+    # for col_name in ["HIGHEST_BIDR"]:
+    #     descriptive.freqtable(df_last_bid[col_name])

@@ -124,7 +124,12 @@ class create_data:
         df["TEMP"] = df["END_DATE"].astype(str) + df["SKU"].astype(str)
         df["ID"] = df.groupby(["TEMP"]).grouper.group_info[0]
 
-        del df["TEMP"], df["UPBID_PRICE"]
+        for col_ in ["TEMP", "UPBID_PRICE"]:
+            try:
+                del df[col_]
+
+            except KeyError:
+                pass
 
         return df
 
@@ -262,3 +267,6 @@ class descriptive:
         obs_df["Percentage"] = (obs_df["Count"] / len_col) * 100
 
         print(obs_df.head(20))
+
+
+# ----------------------------------------------------------------------------------------------------------------------
