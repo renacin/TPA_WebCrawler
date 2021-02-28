@@ -6,12 +6,13 @@
 import glob
 import time
 import sqlite3
+from collections import Counter
+from datetime import datetime, timedelta
+
 import numpy as np
 from scipy import stats
 import pandas as pd
-from collections import Counter
 import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
 # ----------------------------------------------------------------------------------------------------------------------
 
 
@@ -143,6 +144,22 @@ class create_data:
         cleaned_df = df.drop_duplicates(subset=df.columns.difference(["CUR_PRICE", "MIN_UPBID", "MINUTES_LEFT", "NUM_BIDS", "HIGHEST_BIDR", "MINUTES_SINCE", "DAYS_SINCE", "DATE_OBS"]))
 
         return cleaned_df
+
+
+    # [FUNCTION #4] Created An Index Representing PRICE & NUM_BIDS | Desirability
+    @staticmethod
+    def create_index(df):
+
+        # Normalize Columns Of Focus & Create Index Value
+        for col_ in ["CUR_PRICE", "NUM_BIDS"]:
+            df[col_+"_N"] = (df[col_] - df[col_].min()) / (df[col_].max() - df[col_].min())
+
+        df["DESIRABILITY"] = (df["CUR_PRICE_N"] * 0.30) + (df["NUM_BIDS_N"] * 0.70)
+
+        for col_ in ["CUR_PRICE", "NUM_BIDS"]:
+            del df[col_+"_N"]
+
+        return df
 
 
 # ----------------------------------------------------------------------------------------------------------------------

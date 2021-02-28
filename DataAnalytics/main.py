@@ -16,18 +16,20 @@ def main():
     df = pd.read_csv("Data/CleanedData.csv")
     df = create_data.parse_dates(df)
     df_all_data = create_data.create_ids(df)
+
     df_last_bid = create_data.last_bids_df(df_all_data)
 
-    # df_last_bid = df_last_bid[df_last_bid["ITEM_TYPE"] == "Technology"]
+    df_data = create_data.create_index(df_last_bid)
+
+    df_data = df_data[df_data["ITEM_TYPE"] == "Technology"]
 
     # Descriptive Statistics For Ratio Data | Using Final Data
-    for col_name in ["CUR_PRICE", "NUM_BIDS"]:
-        descriptive.histogram(df_last_bid[col_name])
-
+    for col_name in ["CUR_PRICE", "NUM_BIDS", "DESIRABILITY"]:
+        descriptive.histogram(df_data[col_name])
 
     # Descriptive Statistics For Nominal Data | Using Final Data
     for col_name in ["HIGHEST_BIDR"]:
-        descriptive.freqtable(df_last_bid[col_name])
+        descriptive.freqtable(df_data[col_name])
 
 
 # ----------------------------------------------------------------------------------------------------------------------
