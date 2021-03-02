@@ -23,16 +23,24 @@ def main():
 
     # df_data = df_data[df_data["ITEM_TYPE"] == "Technology"]
 
-    # Descriptive Statistics For Ratio Data | Using Final Data
-    for col_name in ["CUR_PRICE", "NUM_BIDS", "DESIRABILITY"]:
-        descriptive.histogram(df_data[col_name])
+    # # Descriptive Statistics For Ratio Data | Using Final Data
+    # for col_name in ["CUR_PRICE", "NUM_BIDS", "DESIRABILITY"]:
+    #     descriptive.histogram(df_data[col_name])
+    #
+    # # Descriptive Statistics For Nominal Data | Using Final Data
+    # for col_name in ["HIGHEST_BIDR"]:
+    #     descriptive.freqtable(df_data[col_name])
 
-    # Descriptive Statistics For Nominal Data | Using Final Data
-    for col_name in ["HIGHEST_BIDR"]:
-        descriptive.freqtable(df_data[col_name])
+    # # Export Data For Analysis
+    # df_data.to_csv("Data/Data2Analyze.csv", index=False)
 
-    # Export Data For Analysis
-    df_data.to_csv("Data/Data2Analyze.csv", index=False)
+    """
+    TODO:
+        + Create Excel File Withh Item Type & Manufacturer
+        + Do Detail Analysis Based On Excel Sheet Created
+        + Ex: Scatterplot Of All; Laptops, Phones, Filter By Manufacturer Etc...
+        
+    """
 # ----------------------------------------------------------------------------------------------------------------------
 
 # Main Entry Point Into Python Code
