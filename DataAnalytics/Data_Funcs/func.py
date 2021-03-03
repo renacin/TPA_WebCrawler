@@ -85,8 +85,9 @@ class prep_data:
 
 class create_data:
 
-    # Function For [FUNCTION #1] Identify The Date Observed
+
     def date_obs_calc(end_date, days_since):
+        """ Function For [parse_dates] Identify The Date Observed """
 
         edl = end_date.split("-")
         edl = list(map(int, edl))
@@ -95,9 +96,10 @@ class create_data:
         return (cleaned_end_date - timedelta(days=days_since))
 
 
-    # [FUNCTION #1] Create Basic Features
+
     @staticmethod
     def parse_dates(df):
+        """ Create Basic Features """
 
         # Format Time
         end_date_list = df["END_DATE"].tolist()
@@ -119,9 +121,11 @@ class create_data:
         return df
 
 
-    # [FUNCTION #2] Create IDs For Type Of Items
+
     @staticmethod
     def create_ids(df):
+        """ Create IDs For Type Of Items """
+
         df["TEMP"] = df["END_DATE"].astype(str) + df["SKU"].astype(str)
         df["ID"] = df.groupby(["TEMP"]).grouper.group_info[0]
 
@@ -135,20 +139,24 @@ class create_data:
         return df
 
 
-    # [FUNCTION #3] Based On Previous Df Create New DF of Only Rows With Final Bid Price | Similar To Remove Redundant
+
     @staticmethod
     def last_bids_df(df):
+        """ Based On Previous Df Create New DF of Only Rows With Final Bid Price | Similar To Remove Redundant"""
 
         # Data Should Be Sorted But Just In Case Sort Again
         df = df.sort_values(["END_DATE", "ITEM_NAME", "MINUTES_LEFT"], ascending=[True, True, True])
-        cleaned_df = df.drop_duplicates(subset=df.columns.difference(["CUR_PRICE", "MIN_UPBID", "MINUTES_LEFT", "NUM_BIDS", "HIGHEST_BIDR", "MINUTES_SINCE", "DAYS_SINCE", "DATE_OBS"]))
+        cleaned_df = df.drop_duplicates(subset=df.columns.difference(["CUR_PRICE", "MIN_UPBID", "MINUTES_LEFT",
+                                                                      "NUM_BIDS", "HIGHEST_BIDR", "MINUTES_SINCE",
+                                                                      "DAYS_SINCE", "DATE_OBS"]))
 
         return cleaned_df
 
 
-    # [FUNCTION #4] Created An Index Representing PRICE & NUM_BIDS | Desirability
+
     @staticmethod
     def create_index(df):
+        """Created An Index Representing PRICE & NUM_BIDS; Desirability. And Create Col Of Item Type | Laptop, Phone Etc..."""
 
         # Normalize Columns Of Focus & Create Index Value
         for col_ in ["CUR_PRICE", "NUM_BIDS"]:
@@ -156,10 +164,12 @@ class create_data:
 
         df["DESIRABILITY"] = (df["CUR_PRICE_N"] * 0.30) + (df["NUM_BIDS_N"] * 0.70)
 
+        # Clean Up
         for col_ in ["CUR_PRICE", "NUM_BIDS"]:
             del df[col_+"_N"]
 
         return df
+
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -168,9 +178,10 @@ class create_data:
 class descriptive:
 
 
-    # [FUNCTION #1] Describe Data Via Central Tendency Measures | Mean, Median, Mode, Sum, Num Obs
+
     @staticmethod
     def central_tendency(df_list, print_data=False):
+        """ Describe Data Via Central Tendency Measures | Mean, Median, Mode, Sum, Num Obs"""
 
         col_name = df_list.name
 
@@ -186,9 +197,10 @@ class descriptive:
         return [col_mean, col_mode, col_median, col_count]
 
 
-    # [FUNCTION #2] Describe Data Via Dispersion Statistics | Std. Dev, Variance, Min, Max
+
     @staticmethod
     def dispersion(df_list, print_data=False):
+        """ Describe Data Via Dispersion Statistics | Std. Dev, Variance, Min, Max"""
 
         col_name = df_list.name
 
@@ -203,9 +215,11 @@ class descriptive:
         return [col_std, col_var, col_min, col_max]
 
 
-    # [FUNCTION #3] Describe Data Via Distribution Statistics | Skewness, Kurtosis | CAUTION SKEW & KURTOSIS CAN BE DISTORTED
+
     @staticmethod
     def distribution(df_list, print_data=False):
+        """ Describe Data Via Distribution Statistics | Skewness, Kurtosis | CAUTION SKEW & KURTOSIS CAN BE DISTORTED"""
+
         col_name = df_list.name
 
         # Skewness Should Be 0; Negative Num Means Left Tail Is Long; Posetive Right Tail Is Long
@@ -219,9 +233,10 @@ class descriptive:
         return [col_skew, col_kurto]
 
 
-    # [FUNCTION #4] Visualize Data By Histogram | USE ONLY ON RATIO DATA ONLY
+
     @staticmethod
     def histogram(df_list):
+        """ Visualize Data By Histogram | USE ONLY ON RATIO DATA ONLY"""
 
         # Name Of Column
         col_name = df_list.name
@@ -268,9 +283,11 @@ class descriptive:
         plt.show()
 
 
-    # [FUNCTION #5] Visualize Data By Freq Table | USE ONLY ON NOMINAL
+
     @staticmethod
     def freqtable(df_list):
+        """ Visualize Data By Freq Table | USE ONLY ON NOMINAL"""
+
         col_name = df_list.name
         len_col =  len(df_list)
 
@@ -284,6 +301,20 @@ class descriptive:
         obs_df["Percentage"] = (obs_df["Count"] / len_col) * 100
 
         print(obs_df.head(20))
+
+
+
+    @staticmethod
+    def line_by_id(df):
+
+
+df = pd.DataFrame({
+   'pig': [20, 18, 489, 675, 1776],
+   'horse': [4, 25, 281, 600, 1900]
+   }, index=[1990, 1997, 2003, 2009, 2014])
+
+df.plot.line()
+
 
 
 # ----------------------------------------------------------------------------------------------------------------------
