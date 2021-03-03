@@ -79,3 +79,25 @@ Notes:
     # # Descriptive Statistics For Nominal Data | Using Final Data
     # for col_name in ["HIGHEST_BIDR"]:
     #     descriptive.freqtable(df_data[col_name])
+
+
+
+
+
+
+
+
+
+
+
+                # Loop Through Elements In ID List
+                temp_price_list = master_nan.copy()
+                for idx, x in enumerate(item_minutes_observed):
+
+                    temp_price_list[x] = item_price_observed[idx]
+
+                # Add To Data Dump Via Name
+                data_dump[item_name] = temp_price_list
+
+            # df = pd.DataFrame.from_dict(data_dump)
+            # df.to_csv("Data/DataDump.csv", index=False)

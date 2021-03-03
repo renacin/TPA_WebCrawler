@@ -22,14 +22,13 @@ def main():
     df_data = create_data.create_index(df_last_bid)
 
     # Filter Data
-    focus_df = df_all_data[df_all_data["ITEM_NAME"].str.contains("Laptop")]
-    focus_df = focus_df[focus_df["ITEM_NAME"] != "Bag"]
+    focus_df = df_all_data[df_all_data["ITEM_NAME"].str.contains("phone")]
 
     # Visualize Data
     descriptive.line_by_id(focus_df)
 
     # Export Data For Analysis
-    focus_df.to_csv("Data/Data2Analyze.csv", index=False)
+    # focus_df.to_csv("Data/Data2Analyze.csv", index=False)
 
 
 # ----------------------------------------------------------------------------------------------------------------------

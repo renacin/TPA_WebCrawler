@@ -307,13 +307,25 @@ class descriptive:
     @staticmethod
     def line_by_id(df):
 
+        unique_id_ = set(df["ID"].tolist())
 
-df = pd.DataFrame({
-   'pig': [20, 18, 489, 675, 1776],
-   'horse': [4, 25, 281, 600, 1900]
-   }, index=[1990, 1997, 2003, 2009, 2014])
+        for id_ in unique_id_:
+            # Grab By ID
+            extract_df = df[df["ID"] == id_]
 
-df.plot.line()
+            # Grab Item Name
+            name_list = extract_df["ITEM_NAME"].tolist()
+            itemname = str(name_list[0])
+            item_name = itemname.replace(" ", "_")
+
+            # Make Copy of Master_Nan List & Replace Price Data By Index Of Time
+            item_minutes_observed = extract_df["MINUTES_SINCE"].tolist()
+            item_price_observed = extract_df["CUR_PRICE"].tolist()
+
+            plt.plot(item_minutes_observed, item_price_observed, label=item_name)
+
+        # plt.legend()
+        plt.show()
 
 
 
