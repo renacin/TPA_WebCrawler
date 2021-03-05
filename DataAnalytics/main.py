@@ -22,13 +22,16 @@ def main():
     df_data = create_data.create_index(df_last_bid)
 
     # Filter Data
-    focus_df = df_all_data[df_all_data["ITEM_NAME"].str.contains("phone")]
+    focus_df = df_all_data
+    focus_df["ITEM_NAME"] = focus_df["ITEM_NAME"].str.upper()
+    re_pattern = r"(MACBOOK|LAPTOP|DESKTOP| PC |ULTRABOOK)" #IPHONE| PHONE |SMARTPHONE|CELLPHONE
+    focus_df = df_all_data[df_all_data["ITEM_NAME"].str.contains(re_pattern)]
 
     # Visualize Data
     descriptive.line_by_id(focus_df)
 
     # Export Data For Analysis
-    # focus_df.to_csv("Data/Data2Analyze.csv", index=False)
+    focus_df.to_csv("Data/Data2Analyze.csv", index=False)
 
 
 # ----------------------------------------------------------------------------------------------------------------------

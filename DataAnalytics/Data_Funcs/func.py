@@ -322,7 +322,13 @@ class descriptive:
             item_minutes_observed = extract_df["MINUTES_SINCE"].tolist()
             item_price_observed = extract_df["CUR_PRICE"].tolist()
 
-            plt.plot(item_minutes_observed, item_price_observed, label=item_name)
+            # Plot Apple Devices A Different Colour
+            if ("PARTS" not in item_name) and ("BAG" not in item_name):
+                if ("APPLE" in item_name) or ("MACBOOK" in item_name) or ("IPHONE" in item_name):
+                    plt.plot(item_minutes_observed, item_price_observed, label=item_name, color="red")
+
+                else:
+                    plt.plot(item_minutes_observed, item_price_observed, label=item_name, color="grey")
 
         # plt.legend()
         plt.show()
