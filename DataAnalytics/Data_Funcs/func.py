@@ -4,15 +4,14 @@
 #
 # ----------------------------------------------------------------------------------------------------------------------
 import glob
-import time
 import sqlite3
-from collections import Counter
 from datetime import datetime, timedelta
 
 import numpy as np
-from scipy import stats
 import pandas as pd
+from scipy import stats
 import matplotlib.pyplot as plt
+from sklearn import linear_model
 # ----------------------------------------------------------------------------------------------------------------------
 
 
@@ -96,7 +95,6 @@ class create_data:
         return (cleaned_end_date - timedelta(days=days_since))
 
 
-
     @staticmethod
     def parse_dates(df):
         """ Create Basic Features """
@@ -121,7 +119,6 @@ class create_data:
         return df
 
 
-
     @staticmethod
     def create_ids(df):
         """ Create IDs For Type Of Items """
@@ -139,7 +136,6 @@ class create_data:
         return df
 
 
-
     @staticmethod
     def last_bids_df(df):
         """ Based On Previous Df Create New DF of Only Rows With Final Bid Price | Similar To Remove Redundant"""
@@ -151,7 +147,6 @@ class create_data:
                                                                       "DAYS_SINCE", "DATE_OBS"]))
 
         return cleaned_df
-
 
 
     @staticmethod
@@ -171,12 +166,10 @@ class create_data:
         return df
 
 
-
 # ----------------------------------------------------------------------------------------------------------------------
 
 
 class descriptive:
-
 
 
     @staticmethod
@@ -197,7 +190,6 @@ class descriptive:
         return [col_mean, col_mode, col_median, col_count]
 
 
-
     @staticmethod
     def dispersion(df_list, print_data=False):
         """ Describe Data Via Dispersion Statistics | Std. Dev, Variance, Min, Max"""
@@ -215,7 +207,6 @@ class descriptive:
         return [col_std, col_var, col_min, col_max]
 
 
-
     @staticmethod
     def distribution(df_list, print_data=False):
         """ Describe Data Via Distribution Statistics | Skewness, Kurtosis | CAUTION SKEW & KURTOSIS CAN BE DISTORTED"""
@@ -231,7 +222,6 @@ class descriptive:
             print("{} | Skewness: {} | Kurtosis: {}".format(col_name, col_skew, col_kurto))
 
         return [col_skew, col_kurto]
-
 
 
     @staticmethod
@@ -283,7 +273,6 @@ class descriptive:
         plt.show()
 
 
-
     @staticmethod
     def freqtable(df_list):
         """ Visualize Data By Freq Table | USE ONLY ON NOMINAL"""
@@ -303,13 +292,36 @@ class descriptive:
         print(obs_df.head(20))
 
 
+    @staticmethod
+    def fit_linear_model(X_Data, Y_Data, X_Pred):
+
+        # Convert To Numpy Arrays & Reshape Needed Data
+        X_Data = np.array(X_Data)
+        X_Data = X_Data.reshape(-1,1)
+        Y_Data = np.array(Y_Data)
+        X_Pred = np.array(X_Pred)
+        X_Pred = X_Pred.reshape(-1,1)
+
+        # Create linear regression object & Train; Return Predicted Data
+        model = linear_model.LinearRegression()
+        model.fit(X_Data, Y_Data)
+
+        return model.predict(X_Pred)
+
 
     @staticmethod
     def line_by_id(df):
 
+        # Grab Unique IDs
         unique_id_ = set(df["ID"].tolist())
 
+        # Create Dictionaries To Store Seperated Data
+        apple_dict = {"Minutes": [], "Price": []}
+        other_dict = {"Minutes": [], "Price": []}
+
+        # Iterate Through IDs
         for id_ in unique_id_:
+
             # Grab By ID
             extract_df = df[df["ID"] == id_]
 
@@ -322,17 +334,32 @@ class descriptive:
             item_minutes_observed = extract_df["MINUTES_SINCE"].tolist()
             item_price_observed = extract_df["CUR_PRICE"].tolist()
 
+
             # Plot Apple Devices A Different Colour
             if ("PARTS" not in item_name) and ("BAG" not in item_name):
+
                 if ("APPLE" in item_name) or ("MACBOOK" in item_name) or ("IPHONE" in item_name):
                     plt.plot(item_minutes_observed, item_price_observed, label=item_name, color="red")
+                    apple_dict["Minutes"].extend(item_minutes_observed)
+                    apple_dict["Price"].extend(item_price_observed)
 
                 else:
                     plt.plot(item_minutes_observed, item_price_observed, label=item_name, color="grey")
+                    other_dict["Minutes"].extend(item_minutes_observed)
+                    other_dict["Price"].extend(item_price_observed)
+
+
+        # Create Polynomial Regression Lines For Both Categories
+        pred_range = [x for x in range(10800)]
+
+        apple_pred_y = descriptive.fit_linear_model(apple_dict["Minutes"], apple_dict["Price"], pred_range)
+        other_pred_y = descriptive.fit_linear_model(other_dict["Minutes"], other_dict["Price"], pred_range)
+
+        plt.plot(pred_range, apple_pred_y, label="Apple Regression Line", color="orange")
+        plt.plot(pred_range, other_pred_y, label="Apple Regression Line", color="black")
 
         # plt.legend()
         plt.show()
-
 
 
 # ----------------------------------------------------------------------------------------------------------------------
